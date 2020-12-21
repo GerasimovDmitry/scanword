@@ -1,0 +1,46 @@
+package com.scanword.backend.controller;
+
+import com.scanword.backend.entity.Media;
+import com.scanword.backend.entity.models.ScanwordModel;
+import com.scanword.backend.service.DictionaryRepositoryService;
+import com.scanword.backend.service.ScanwordRepositoryService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@Slf4j
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(path="/scanword")
+public class ScanwordController {
+    private ScanwordRepositoryService scanwordRepositoryService;
+
+    public ScanwordController(ScanwordRepositoryService scanwordRepositoryService) {
+        this.scanwordRepositoryService = scanwordRepositoryService;
+    }
+
+    @PostMapping("/save/super")
+    public void saveScanwordByAdmin(@RequestBody ScanwordModel scanword) {
+    }
+
+    @PostMapping("/save")
+    public void saveScanwordByUser(@RequestBody ScanwordModel scanword) {
+    }
+
+    @PostMapping("/check")
+    public ScanwordModel checkScanword(@RequestBody ScanwordModel scanword) {
+        return null;
+    }
+
+    @PostMapping("/open/super")
+    public ScanwordModel getScanwordByAdmin(@RequestParam UUID userId, UUID scanwordId) {
+        return null;
+    }
+
+    @PostMapping("/open")
+    public ScanwordModel getScanwordByUser(@RequestParam UUID userId, UUID scanwordId) {
+        return null;
+    }
+}
