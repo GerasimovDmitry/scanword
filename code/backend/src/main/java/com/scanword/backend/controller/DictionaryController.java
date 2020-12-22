@@ -38,13 +38,14 @@ public class DictionaryController {
         return dictionaryRepositoryService.getItemsById(dictUUID);
     }
 
-    @PostMapping("/add/item")
-    public DictionaryItem addDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
-        return null;
+    @PutMapping("/add/item")
+    public List<DictionaryItem> addDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
+        return dictionaryRepositoryService.setItem(dictUUID, item);
     }
 
-    @PostMapping("/delete/item")
-    public void removeDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
+    @DeleteMapping("/delete/item")
+    public List<DictionaryItem> removeDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
+        return dictionaryRepositoryService.deleteItem(dictUUID, item);
     }
 
     @PostMapping("/edit/item")
