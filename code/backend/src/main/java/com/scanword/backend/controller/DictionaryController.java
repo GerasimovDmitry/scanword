@@ -33,7 +33,7 @@ public class DictionaryController {
         return dictionaryRepositoryService.getAll();
     }
 
-    @GetMapping("/list")
+    @PostMapping("/list")
     public List<DictionaryItem> getDictionaryItems(@RequestParam("id") UUID dictUUID) {
         return dictionaryRepositoryService.getItemsById(dictUUID);
     }
