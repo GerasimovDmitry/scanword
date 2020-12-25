@@ -11,3 +11,11 @@ values ('c31c7d29-fe9c-4aeb-8ad2-9358053c59b2', 'img_1', 'img_1.jpg', true),
        ('110040d9-22a9-4164-b06c-54fedf1a96cf', 'sound_1', 'sound_1.mp3', false),
        ('599733e2-2e1e-4331-bfe4-02264bfaf6d5', 'sound_2', 'sound_2.mp3', false),
        ('58037bce-c1a4-42f7-8e66-014e2a4d5fc5', 'sound_3', 'sound_3.mp3', false);
+
+insert into question(answer, text, url)
+values ('answer1', 'text1','img_1.jpg'),
+       ('answer2', 'text2','img_2.jpg'),
+       ('answer3', 'text3','img_3.jpg'),
+       ('answer4', 'text4','img_1.jpg'),
+       ('answer5', 'text5','img_1.jpg'),
+       ('answer6', 'text6','img_1.jpg')
