@@ -1,5 +1,6 @@
 package com.scanword.backend.controller;
 
+import com.scanword.backend.entity.Dictionary;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.service.DictionaryRepositoryService;
@@ -45,10 +46,14 @@ public class DictionaryController {
                 String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
                 byte[] bytes = file.getBytes();
                 BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name + "-uploaded")));
+                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
                 stream.write(bytes);
                 stream.close();
-                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
+                Dictionary savedDictionary = new Dictionary();
+                savedDictionary.setName(cutOffExtension(name));
+                savedDictionary.setUrl(name);
+                dictionaryRepositoryService.saveFile(savedDictionary);
+                return "Вы удачно загрузили " + name + " в " + name + " !";
             } catch (Exception e) {
                 return "Вам не удалось загрузить " + name + " => " + e.getMessage();
             }
@@ -65,6 +70,10 @@ public class DictionaryController {
             extension = fileName.substring(i+1);
         }
         return extension;
+    }
+
+    private static String cutOffExtension(String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
     @PutMapping("/add/item")

@@ -65,16 +65,22 @@ public class MediaController {
         String extension = getExtension(name);
         if (!file.isEmpty() && isValidExtension(extension)) {
             try {
-                String relativeWebPath = isSound(extension)
-                        ? "src/main/resources/sounds"
-                        : "src/main/resources/images";
+                boolean isPic = isPic(extension);
+                String relativeWebPath = isPic(extension)
+                        ? "src/main/resources/images"
+                        : "src/main/resources/sounds";
                 String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
                 byte[] bytes = file.getBytes();
                 BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name + "-uploaded")));
+                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
                 stream.write(bytes);
                 stream.close();
-                return "Вы удачно загрузили " + name + " в " + name + "-uploaded !";
+                Media savedFile = new Media();
+                savedFile.setUrl(name);
+                savedFile.setName(cutOffExtension(name));
+                savedFile.setIsImage(isPic);
+                mediaRepositoryService.saveFile(savedFile);
+                return "Вы удачно загрузили " + name + " в " + name + " !";
             } catch (Exception e) {
                 return "Вам не удалось загрузить " + name + " => " + e.getMessage();
             }
@@ -91,6 +97,10 @@ public class MediaController {
             extension = fileName.substring(i+1);
         }
         return extension.toUpperCase();
+    }
+
+    private static String cutOffExtension(String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
     private static boolean isValidExtension(String extension) {
