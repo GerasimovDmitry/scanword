@@ -16,32 +16,32 @@ import java.util.UUID;
 public class QuestionController {
     private QuestionRepositoryService questionRepositoryService;
 
-    QuestionController(QuestionRepositoryService questionRepositoryService1) {
-
-        this.questionRepositoryService = questionRepositoryService1;
-    }
-
-    @PostMapping("/hint")
-    public String getHint(@RequestParam UUID questionId) {
-        return null;
+    QuestionController(QuestionRepositoryService questionRepositoryService) {
+        this.questionRepositoryService = questionRepositoryService;
     }
 
     @GetMapping("/all")
     public List<Question> getQuestions() {
-        return null;
+        return questionRepositoryService.getAll();
     }
 
-    @PostMapping("/all/dictionary")
-    public List<Question> getQuestionsByScanword(@RequestParam UUID dictionaryId) {
-        return null;
+    @PostMapping()
+    public Question getQuestion(@RequestParam UUID questionId) {
+        return questionRepositoryService.getQuestion(questionId);
     }
 
-    @PostMapping("/delete")
-    public void removeMediaQuestion(@RequestParam UUID questionId) {
+    @PutMapping("/edit")
+    public Question editQuestion(@RequestBody Question question) {
+        return questionRepositoryService.editQuestion(question);
     }
 
-    @PostMapping("/edit")
-    public Question editMediaQuestion(@RequestParam UUID questionId) {
-        return null;
+    @PostMapping("/create")
+    public Question createQuestion(@RequestBody Question question) {
+        return questionRepositoryService.createQuestion(question);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteQuestion(@RequestBody Question question) {
+        questionRepositoryService.deleteQuestion(question);
     }
 }
