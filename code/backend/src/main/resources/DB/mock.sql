@@ -16,6 +16,6 @@ insert into question(answer, text, url)
 values ('answer1', 'text1','img_1.jpg'),
        ('answer2', 'text2','img_2.jpg'),
        ('answer3', 'text3','img_3.jpg'),
-       ('answer4', 'text4','img_1.jpg'),
-       ('answer5', 'text5','img_1.jpg'),
-       ('answer6', 'text6','img_1.jpg')
+       ('answer4', 'text4','sound_1.jpg'),
+       ('answer5', 'text5','sound_2.jpg'),
+       ('answer6', 'text6','sound_3.jpg')
