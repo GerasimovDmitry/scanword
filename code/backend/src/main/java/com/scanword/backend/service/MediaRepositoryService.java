@@ -27,5 +27,6 @@ public class MediaRepositoryService {
     }
 
     public void saveFile (Media media) {
+        repository.saveAndFlush(media);
     }
 }

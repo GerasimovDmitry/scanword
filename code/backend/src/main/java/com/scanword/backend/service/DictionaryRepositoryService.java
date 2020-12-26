@@ -1,6 +1,7 @@
 package com.scanword.backend.service;
 
 import com.scanword.backend.entity.Dictionary;
+import com.scanword.backend.entity.Media;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.repository.DictionaryRepository;
@@ -119,5 +120,9 @@ public class DictionaryRepositoryService {
         out.write(line);
         out.newLine();
         out.flush();
+    }
+
+    public void saveFile (Dictionary dictionary) {
+        repository.saveAndFlush(dictionary);
     }
 }

@@ -1,19 +1,17 @@
 package com.scanword.backend.controller;
 
 import com.scanword.backend.entity.Dictionary;
-import com.scanword.backend.entity.Question;
-import com.scanword.backend.entity.User;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
-import com.scanword.backend.entity.models.UserModel;
-import com.scanword.backend.entity.models.UserProfile;
 import com.scanword.backend.service.DictionaryRepositoryService;
-import com.scanword.backend.service.UserRepositoryService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +34,46 @@ public class DictionaryController {
     @PostMapping("/list")
     public List<DictionaryItem> getDictionaryItems(@RequestParam("id") UUID dictUUID) {
         return dictionaryRepositoryService.getItemsById(dictUUID);
+    }
+
+    @PostMapping(value="/upload")
+    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
+                                                 @RequestBody MultipartFile file) {
+        String extension = getExtension(name);
+        if (!file.isEmpty() && extension == "dict") {
+            try {
+                String relativeWebPath = "src/main/resources/dictionaries";
+                String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
+                stream.write(bytes);
+                stream.close();
+                Dictionary savedDictionary = new Dictionary();
+                savedDictionary.setName(cutOffExtension(name));
+                savedDictionary.setUrl(name);
+                dictionaryRepositoryService.saveFile(savedDictionary);
+                return "Вы удачно загрузили " + name + " в " + name + " !";
+            } catch (Exception e) {
+                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+            }
+        } else {
+            return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
+        }
+    }
+
+    private static String getExtension(String fileName) {
+        String extension = "";
+
+        int i = fileName.lastIndexOf('.');
+        if (i > 0) {
+            extension = fileName.substring(i+1);
+        }
+        return extension;
+    }
+
+    private static String cutOffExtension(String fileName) {
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
     @PutMapping("/add/item")
