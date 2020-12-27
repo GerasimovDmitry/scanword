@@ -1,8 +1,8 @@
 package com.scanword.backend.controller;
 
-import com.scanword.backend.entity.Question;
 import com.scanword.backend.entity.models.QuestionModel;
 import com.scanword.backend.service.QuestionRepositoryService;
+import com.scanword.backend.service.ScanwordQuestionRepositoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,33 +15,35 @@ import java.util.UUID;
 @RequestMapping(path="/question")
 public class QuestionController {
     private QuestionRepositoryService questionRepositoryService;
+    private ScanwordQuestionRepositoryService scanwordQuestionRepositoryService;
 
     QuestionController(QuestionRepositoryService questionRepositoryService) {
         this.questionRepositoryService = questionRepositoryService;
     }
 
     @GetMapping("/all")
-    public List<Question> getQuestions() {
+    public List<QuestionModel> getQuestions() {
         return questionRepositoryService.getAll();
     }
 
     @PostMapping()
-    public Question getQuestion(@RequestParam UUID questionId) {
+    public QuestionModel getQuestion(@RequestParam UUID questionId) {
         return questionRepositoryService.getQuestion(questionId);
     }
 
     @PutMapping("/edit")
-    public Question editQuestion(@RequestBody Question question) {
+    public QuestionModel editQuestion(@RequestBody QuestionModel question) {
         return questionRepositoryService.editQuestion(question);
     }
 
     @PostMapping("/create")
-    public Question createQuestion(@RequestBody Question question) {
+    public QuestionModel createQuestion(@RequestBody QuestionModel question) {
         return questionRepositoryService.createQuestion(question);
     }
 
     @DeleteMapping("/delete")
-    public void deleteQuestion(@RequestBody Question question) {
+    public void deleteQuestion(@RequestBody QuestionModel question) {
         questionRepositoryService.deleteQuestion(question);
     }
+
 }

@@ -8,7 +8,11 @@ import java.util.UUID;
 public class QuestionModel {
     private String text;
 
+    private String answer;
+
     private String url;
+
+    private String type;
 
     private UUID scanwordId;
 
@@ -31,4 +35,6 @@ public class QuestionModel {
     private String orientation;
 
     private Boolean isPassed = false;
+
+    private String dictionaryName;
 }

@@ -1,6 +1,7 @@
 package com.scanword.backend.controller;
 
 import com.scanword.backend.entity.Dictionary;
+import com.scanword.backend.entity.enums.ExtensionEnum;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.service.DictionaryRepositoryService;
@@ -39,7 +40,7 @@ public class DictionaryController {
     @PostMapping(value="/upload")
     public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
                                                  @RequestBody MultipartFile file) {
-        String extension = getExtension(name);
+        String extension = ExtensionEnum.getExtension(name);
         if (!file.isEmpty() && extension == "dict") {
             try {
                 String relativeWebPath = "src/main/resources/dictionaries";
@@ -50,7 +51,7 @@ public class DictionaryController {
                 stream.write(bytes);
                 stream.close();
                 Dictionary savedDictionary = new Dictionary();
-                savedDictionary.setName(cutOffExtension(name));
+                savedDictionary.setName(ExtensionEnum.cutOffExtension(name));
                 savedDictionary.setUrl(name);
                 dictionaryRepositoryService.saveFile(savedDictionary);
                 return "Вы удачно загрузили " + name + " в " + name + " !";
@@ -60,20 +61,6 @@ public class DictionaryController {
         } else {
             return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
         }
-    }
-
-    private static String getExtension(String fileName) {
-        String extension = "";
-
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = fileName.substring(i+1);
-        }
-        return extension;
-    }
-
-    private static String cutOffExtension(String fileName) {
-        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
 
     @PutMapping("/add/item")
@@ -86,8 +73,8 @@ public class DictionaryController {
         return dictionaryRepositoryService.deleteItem(dictUUID, item);
     }
 
-    @PostMapping("/edit/item")
-    public DictionaryItem editMediaQuestion(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
-        return null;
+    @PutMapping("/edit/item")
+    public DictionaryItem editDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody List<DictionaryItem> items) {
+         return dictionaryRepositoryService.editItem(dictUUID, items);
     }
 }
