@@ -35,4 +35,6 @@ public class QuestionModel {
     private String orientation;
 
     private Boolean isPassed = false;
+
+    private String dictionaryName;
 }
