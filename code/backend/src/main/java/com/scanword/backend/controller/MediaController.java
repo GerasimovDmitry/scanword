@@ -62,11 +62,11 @@ public class MediaController {
     @PostMapping(value="/upload")
     public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
                                                  @RequestBody MultipartFile file){
-        String extension = getExtension(name);
-        if (!file.isEmpty() && isValidExtension(extension)) {
+        String extension = ExtensionEnum.getExtension(name);
+        if (!file.isEmpty() && ExtensionEnum.isValidExtension(extension)) {
             try {
-                boolean isPic = isPic(extension);
-                String relativeWebPath = isPic(extension)
+                boolean isPic = ExtensionEnum.isPic(extension);
+                String relativeWebPath = ExtensionEnum.isPic(extension)
                         ? "src/main/resources/images"
                         : "src/main/resources/sounds";
                 String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
@@ -77,7 +77,7 @@ public class MediaController {
                 stream.close();
                 Media savedFile = new Media();
                 savedFile.setUrl(name);
-                savedFile.setName(cutOffExtension(name));
+                savedFile.setName(ExtensionEnum.cutOffExtension(name));
                 savedFile.setIsImage(isPic);
                 mediaRepositoryService.saveFile(savedFile);
                 return "Вы удачно загрузили " + name + " в " + name + " !";
@@ -87,43 +87,5 @@ public class MediaController {
         } else {
             return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
         }
-    }
-
-    private static String getExtension(String fileName) {
-        String extension = "";
-
-        int i = fileName.lastIndexOf('.');
-        if (i > 0) {
-            extension = fileName.substring(i+1);
-        }
-        return extension.toUpperCase();
-    }
-
-    private static String cutOffExtension(String fileName) {
-        return fileName.substring(0, fileName.lastIndexOf('.'));
-    }
-
-    private static boolean isValidExtension(String extension) {
-        return isPic(extension.toUpperCase()) || isSound(extension.toUpperCase());
-    }
-
-    private static boolean isPic(String extension) throws IllegalArgumentException {
-        try {
-            ExtensionEnum.Pics.valueOf(extension);
-        }
-        catch (IllegalArgumentException e) {
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean isSound(String extension) throws IllegalArgumentException {
-        try {
-            ExtensionEnum.Sound.valueOf(extension);
-        }
-        catch (IllegalArgumentException e) {
-            return false;
-        }
-        return true;
     }
 }
