@@ -86,8 +86,8 @@ public class DictionaryController {
         return dictionaryRepositoryService.deleteItem(dictUUID, item);
     }
 
-    @PostMapping("/edit/item")
-    public DictionaryItem editMediaQuestion(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
-        return null;
+    @PutMapping("/edit/item")
+    public DictionaryItem editDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody List<DictionaryItem> items) {
+         return dictionaryRepositoryService.editItem(dictUUID, items);
     }
 }

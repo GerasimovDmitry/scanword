@@ -115,6 +115,12 @@ public class DictionaryRepositoryService {
         return dictionaryItems;
     }
 
+    public DictionaryItem editItem(UUID dictUUID, List<DictionaryItem> items) {
+        deleteItem(dictUUID, items.get(0));
+        setItem(dictUUID, items.get(1));
+        return items.get(1);
+    }
+
     private void writeToDictionary(DictionaryItem item, BufferedWriter out) throws IOException {
         String line = item.getAnswer() + " " + item.getText();
         out.write(line);
