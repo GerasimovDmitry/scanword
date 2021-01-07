@@ -64,38 +64,37 @@ public class MediaController {
                                                  @RequestBody MultipartFile file){
         String extension = ExtensionEnum.getExtension(name);
         if (!file.isEmpty() && ExtensionEnum.isValidExtension(extension)) {
-            try {
-                boolean isPic = ExtensionEnum.isPic(extension);
-                String relativeSrcPath = isPic
-                        ? "src/main/resources/images"
-                        : "src/main/resources/sounds";
-                String relativeTargetPath = isPic
-                        ? "target/classes/images"
-                        : "target/classes/sounds";
-                String absoluteFilePath = Paths.get(relativeSrcPath).toAbsolutePath().toString();
-                byte[] bytes = file.getBytes();
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
-                stream.write(bytes);
-                stream.close();
+            if (mediaRepositoryService.getFileByName(name).isEmpty()) {
+                try {
+                    boolean isPic = ExtensionEnum.isPic(extension);
+                    String relativeSrcPath = isPic
+                            ? "src/main/resources/images"
+                            : "src/main/resources/sounds";
+                    String relativeTargetPath = isPic
+                            ? "target/classes/images"
+                            : "target/classes/sounds";
+                    String absoluteFilePath = Paths.get(relativeSrcPath).toAbsolutePath().toString();
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
+                    stream.write(bytes);
+                    stream.close();
 
-                absoluteFilePath = Paths.get(relativeTargetPath).toAbsolutePath().toString();
-                stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
-                stream.write(bytes);
-                stream.close();
-                Media savedFile = new Media();
-                savedFile.setUrl(name);
-                savedFile.setName(ExtensionEnum.cutOffExtension(name));
-                savedFile.setIsImage(isPic);
-                if (mediaRepositoryService.getFileByName(name).isEmpty()) {
+                    absoluteFilePath = Paths.get(relativeTargetPath).toAbsolutePath().toString();
+                    stream =
+                            new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
+                    stream.write(bytes);
+                    stream.close();
+                    Media savedFile = new Media();
+                    savedFile.setUrl(name);
+                    savedFile.setName(ExtensionEnum.cutOffExtension(name));
+                    savedFile.setIsImage(isPic);
                     mediaRepositoryService.saveFile(savedFile);
                     return "Вы удачно загрузили " + name + " в " + name + " !";
+                } catch (Exception e) {
+                    return "Вам не удалось загрузить " + name + " => " + e.getMessage();
                 }
-                else return "Файл с таким именем уже существует";
-            } catch (Exception e) {
-                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
-            }
+            } else return "Файл с таким именем уже существует";
         } else {
             return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
         }
@@ -105,7 +104,6 @@ public class MediaController {
     public @ResponseBody String deleteMedia(@RequestParam("name") String name) {
         String extension = ExtensionEnum.getExtension(name);
         boolean isPic = ExtensionEnum.isPic(extension);
-        mediaRepositoryService.deleteFileByName(name);
 
         String relativeSrcPath = isPic
                 ? "src/main/resources/images"
@@ -119,6 +117,7 @@ public class MediaController {
             absoluteFilePath = Paths.get(relativeTargetPath).toAbsolutePath().toString();
             mediaToDelete = new File(absoluteFilePath,name);
             if(mediaToDelete.delete()){
+                mediaRepositoryService.deleteFileByName(name);
                 return  name + " удалено";
             }
             else return "не удалось удалить " + name;

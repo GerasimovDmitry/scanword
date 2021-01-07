@@ -41,6 +41,14 @@ public class DictionaryRepositoryService {
         return  dictionaryModels;
     }
 
+    public Dictionary getDictionaryById(UUID dictUUID) {
+        return repository.findByUUID(dictUUID);
+    }
+
+    public List<Dictionary> getFileByName (String name) {
+        return repository.getDictionaryByName(name);
+    }
+
     public List<DictionaryItem> getItemsById(UUID dictUUID) {
         List<DictionaryItem> dictionaryItems = new ArrayList<DictionaryItem>();
         Dictionary dictionary = repository.findByUUID(dictUUID);
@@ -122,17 +130,6 @@ public class DictionaryRepositoryService {
         repository.delete(dict);
     }
 
-    public DictionaryModel addEmptyDictionary(String name){
-        Dictionary newDict = new Dictionary();
-        newDict.setName(ExtensionEnum.cutOffExtension(name));
-        newDict.setUrl(name);
-        newDict = repository.saveAndFlush(newDict);
-        DictionaryModel model = new DictionaryModel();
-        model.setId(newDict.getUuid());
-        model.setName(newDict.getName());
-        return model;
-    }
-
     public DictionaryItem editItem(UUID dictUUID, List<DictionaryItem> items) {
         deleteItem(dictUUID, items.get(0));
         setItem(dictUUID, items.get(1));
@@ -146,7 +143,7 @@ public class DictionaryRepositoryService {
         out.flush();
     }
 
-    public void saveFile (Dictionary dictionary) {
-        repository.saveAndFlush(dictionary);
+    public Dictionary saveFile (Dictionary dictionary) {
+        return repository.saveAndFlush(dictionary);
     }
 }
