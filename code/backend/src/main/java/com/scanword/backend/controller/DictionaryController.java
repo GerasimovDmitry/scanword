@@ -6,8 +6,10 @@ import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.service.DictionaryRepositoryService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -58,16 +60,17 @@ public class DictionaryController {
                     dictionaryRepositoryService.saveFile(savedDictionary);
                     return "Вы удачно загрузили " + name + " в " + name + " !";
                 } catch (Exception e) {
-                    return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name, e);
                 }
-            } else return "Словарь с таким именем уже существует";
-        } else {
-            return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
-        }
+            } else throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Словарь с таким именем уже существует");
+        } else throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.");
     }
 
     @PostMapping(value="/add", produces = "text/plain;charset=UTF-8")
-    public String addNewEmptyDictionary(@RequestParam("name") String name) {
+    public @ResponseBody String addNewEmptyDictionary(@RequestParam("name") String name) {
         String relativeWebPath = "src/main/resources/dictionaries";
         String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
         File dictonaryFile = new File(absoluteFilePath,name + ".dict");
@@ -80,14 +83,15 @@ public class DictionaryController {
                 savedDictionary = dictionaryRepositoryService.saveFile(savedDictionary);
                 return "Вы удачно загрузили " + name + " в " + name + ".dict" + " !";
             } catch (IOException e) {
-                e.printStackTrace();
-                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name, e);
             }
-        } else return "Словарь с таким именем уже существует";
+        } else throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Словарь с таким именем уже существует");
     }
 
     @DeleteMapping(value="/delete", produces = "text/plain;charset=UTF-8")
-    public String removeDictionary(@RequestParam("id") UUID dictUUID) {
+    public @ResponseBody String removeDictionary(@RequestParam("id") UUID dictUUID) {
         Dictionary dict = dictionaryRepositoryService.getDictionaryById(dictUUID);
 
         String relativeWebPath = "src/main/resources/dictionaries";
@@ -99,7 +103,8 @@ public class DictionaryController {
             dictionaryRepositoryService.delete(dictUUID);
             return  dict.getUrl() + " удалено";
         }
-        else return "не удалось удалить " + dict.getUrl();
+        else throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "не удалось удалить " + dict.getUrl());
     }
 
     @PutMapping("/add/item")

@@ -5,11 +5,12 @@ import com.scanword.backend.entity.enums.ExtensionEnum;
 import com.scanword.backend.service.MediaRepositoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.file.Paths;
@@ -92,11 +93,14 @@ public class MediaController {
                     mediaRepositoryService.saveFile(savedFile);
                     return "Вы удачно загрузили " + name + " в " + name + " !";
                 } catch (Exception e) {
-                    return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name, e);
                 }
-            } else return "Файл с таким именем уже существует";
+            } else throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Словарь с таким именем уже существует");
         } else {
-            return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.");
         }
     }
 
@@ -120,8 +124,10 @@ public class MediaController {
                 mediaRepositoryService.deleteFileByName(name);
                 return  name + " удалено";
             }
-            else return "не удалось удалить " + name;
+            else throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "не удалось удалить " + name);
         }
-        else return "не удалось удалить " + name;
+        else throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "не удалось удалить " + name);
     }
 }
