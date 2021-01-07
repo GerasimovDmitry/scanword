@@ -77,11 +77,20 @@ public class DictionaryController {
         if (dictionaryRepositoryService.getFileByName(name).isEmpty()) {
             try {
                 dictonaryFile.createNewFile();
-                Dictionary savedDictionary = new Dictionary();
-                savedDictionary.setName(name);
-                savedDictionary.setUrl(name + ".dict");
-                savedDictionary = dictionaryRepositoryService.saveFile(savedDictionary);
-                return "Вы удачно загрузили " + name + " в " + name + ".dict" + " !";
+                relativeWebPath = "target/classes/dictionaries";
+                absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
+                dictonaryFile = new File(absoluteFilePath,name + ".dict");
+                try {
+                    dictonaryFile.createNewFile();
+                    Dictionary savedDictionary = new Dictionary();
+                    savedDictionary.setName(name);
+                    savedDictionary.setUrl(name + ".dict");
+                    savedDictionary = dictionaryRepositoryService.saveFile(savedDictionary);
+                    return "Вы удачно загрузили " + name + " в " + name + ".dict" + " !";
+                } catch (IOException e) {
+                    throw new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name, e);
+                }
             } catch (IOException e) {
                 throw new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name, e);
