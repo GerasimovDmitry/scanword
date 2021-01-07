@@ -1,17 +1,13 @@
 package com.scanword.backend.service;
 
 import com.scanword.backend.entity.Dictionary;
-import com.scanword.backend.entity.Media;
-import com.scanword.backend.entity.enums.ExtensionEnum;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.repository.DictionaryRepository;
-import com.scanword.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -77,9 +73,10 @@ public class DictionaryRepositoryService {
                 line = reader.readLine();
             }
             reader.close();
-        } catch (IOException e) {
-            throw new ResponseStatusException(
-                    HttpStatus.OK, "Словарь пуст");
+        } catch (IOException  e) {
+            e.printStackTrace();
+        } catch (NullPointerException e){
+            return dictionaryItems;
         }
         return dictionaryItems;
     }
