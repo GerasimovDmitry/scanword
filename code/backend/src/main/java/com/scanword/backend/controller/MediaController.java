@@ -59,17 +59,17 @@ public class MediaController {
 
     }
 
-    @PostMapping(value="/upload")
+    @PostMapping(value="/upload", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
                                                  @RequestBody MultipartFile file){
         String extension = ExtensionEnum.getExtension(name);
         if (!file.isEmpty() && ExtensionEnum.isValidExtension(extension)) {
             try {
                 boolean isPic = ExtensionEnum.isPic(extension);
-                String relativeSrcPath = ExtensionEnum.isPic(extension)
+                String relativeSrcPath = isPic
                         ? "src/main/resources/images"
                         : "src/main/resources/sounds";
-                String relativeTargetPath = ExtensionEnum.isPic(extension)
+                String relativeTargetPath = isPic
                         ? "target/classes/images"
                         : "target/classes/sounds";
                 String absoluteFilePath = Paths.get(relativeSrcPath).toAbsolutePath().toString();
@@ -77,6 +77,7 @@ public class MediaController {
                 BufferedOutputStream stream =
                         new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
                 stream.write(bytes);
+                stream.close();
 
                 absoluteFilePath = Paths.get(relativeTargetPath).toAbsolutePath().toString();
                 stream =
@@ -87,13 +88,41 @@ public class MediaController {
                 savedFile.setUrl(name);
                 savedFile.setName(ExtensionEnum.cutOffExtension(name));
                 savedFile.setIsImage(isPic);
-                mediaRepositoryService.saveFile(savedFile);
-                return "Вы удачно загрузили " + name + " в " + name + " !";
+                if (mediaRepositoryService.getFileByName(name).isEmpty()) {
+                    mediaRepositoryService.saveFile(savedFile);
+                    return "Вы удачно загрузили " + name + " в " + name + " !";
+                }
+                else return "Файл с таким именем уже существует";
             } catch (Exception e) {
                 return "Вам не удалось загрузить " + name + " => " + e.getMessage();
             }
         } else {
             return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
         }
+    }
+
+    @DeleteMapping(value="/delete", produces = "text/plain;charset=UTF-8")
+    public @ResponseBody String deleteMedia(@RequestParam("name") String name) {
+        String extension = ExtensionEnum.getExtension(name);
+        boolean isPic = ExtensionEnum.isPic(extension);
+        mediaRepositoryService.deleteFileByName(name);
+
+        String relativeSrcPath = isPic
+                ? "src/main/resources/images"
+                : "src/main/resources/sounds";
+        String absoluteFilePath = Paths.get(relativeSrcPath).toAbsolutePath().toString();
+        File mediaToDelete = new File(absoluteFilePath,name);
+        if(mediaToDelete.delete()){
+            String relativeTargetPath = isPic
+                    ? "target/classes/images"
+                    : "target/classes/sounds";
+            absoluteFilePath = Paths.get(relativeTargetPath).toAbsolutePath().toString();
+            mediaToDelete = new File(absoluteFilePath,name);
+            if(mediaToDelete.delete()){
+                return  name + " удалено";
+            }
+            else return "не удалось удалить " + name;
+        }
+        else return "не удалось удалить " + name;
     }
 }
