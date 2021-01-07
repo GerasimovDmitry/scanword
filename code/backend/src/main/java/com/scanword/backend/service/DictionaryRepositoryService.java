@@ -10,8 +10,10 @@ import com.scanword.backend.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -76,7 +78,8 @@ public class DictionaryRepositoryService {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ResponseStatusException(
+                    HttpStatus.OK, "Словарь пуст");
         }
         return dictionaryItems;
     }
