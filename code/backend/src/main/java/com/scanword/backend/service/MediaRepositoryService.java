@@ -29,4 +29,11 @@ public class MediaRepositoryService {
     public void saveFile (Media media) {
         repository.saveAndFlush(media);
     }
+
+    public void deleteFileByName (String name) {
+        repository.deleteMediaByUrl(name);
+    }
+    public List<Media> getFileByName (String name) {
+        return repository.getMediaByUrl(name);
+    }
 }

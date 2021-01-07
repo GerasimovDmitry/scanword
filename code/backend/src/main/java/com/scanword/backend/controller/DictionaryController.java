@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
@@ -37,30 +38,68 @@ public class DictionaryController {
         return dictionaryRepositoryService.getItemsById(dictUUID);
     }
 
-    @PostMapping(value="/upload")
+    @PostMapping(value="/upload", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
                                                  @RequestBody MultipartFile file) {
         String extension = ExtensionEnum.getExtension(name);
         if (!file.isEmpty() && extension == "dict") {
-            try {
-                String relativeWebPath = "src/main/resources/dictionaries";
-                String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
-                byte[] bytes = file.getBytes();
-                BufferedOutputStream stream =
-                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
-                stream.write(bytes);
-                stream.close();
-                Dictionary savedDictionary = new Dictionary();
-                savedDictionary.setName(ExtensionEnum.cutOffExtension(name));
-                savedDictionary.setUrl(name);
-                dictionaryRepositoryService.saveFile(savedDictionary);
-                return "Вы удачно загрузили " + name + " в " + name + " !";
-            } catch (Exception e) {
-                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
-            }
+            if (dictionaryRepositoryService.getFileByName(name).isEmpty()) {
+                try {
+                    String relativeWebPath = "src/main/resources/dictionaries";
+                    String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
+                    byte[] bytes = file.getBytes();
+                    BufferedOutputStream stream =
+                            new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
+                    stream.write(bytes);
+                    stream.close();
+                    Dictionary savedDictionary = new Dictionary();
+                    savedDictionary.setName(ExtensionEnum.cutOffExtension(name));
+                    savedDictionary.setUrl(name);
+                    dictionaryRepositoryService.saveFile(savedDictionary);
+                    return "Вы удачно загрузили " + name + " в " + name + " !";
+                } catch (Exception e) {
+                    return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+                }
+            } else return "Словарь с таким именем уже существует";
         } else {
             return "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.";
         }
+    }
+
+    @PostMapping(value="/add", produces = "text/plain;charset=UTF-8")
+    public String addNewEmptyDictionary(@RequestParam("name") String name) {
+        String relativeWebPath = "src/main/resources/dictionaries";
+        String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
+        File dictonaryFile = new File(absoluteFilePath,name + ".dict");
+        if (dictionaryRepositoryService.getFileByName(name).isEmpty()) {
+            try {
+                dictonaryFile.createNewFile();
+                Dictionary savedDictionary = new Dictionary();
+                savedDictionary.setName(name);
+                savedDictionary.setUrl(name + ".dict");
+                savedDictionary = dictionaryRepositoryService.saveFile(savedDictionary);
+                return "Вы удачно загрузили " + name + " в " + name + ".dict" + " !";
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "Вам не удалось загрузить " + name + " => " + e.getMessage();
+            }
+        } else return "Словарь с таким именем уже существует";
+    }
+
+    @DeleteMapping(value="/delete", produces = "text/plain;charset=UTF-8")
+    public String removeDictionary(@RequestParam("id") UUID dictUUID) {
+        Dictionary dict = dictionaryRepositoryService.getDictionaryById(dictUUID);
+
+        String relativeWebPath = "src/main/resources/dictionaries";
+        String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
+
+        File dictToDelete = new File(absoluteFilePath,dict.getUrl());
+
+        if(dictToDelete.delete()){
+            dictionaryRepositoryService.delete(dictUUID);
+            return  dict.getUrl() + " удалено";
+        }
+        else return "не удалось удалить " + dict.getUrl();
     }
 
     @PutMapping("/add/item")

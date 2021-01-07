@@ -2,6 +2,7 @@ package com.scanword.backend.service;
 
 import com.scanword.backend.entity.Dictionary;
 import com.scanword.backend.entity.Media;
+import com.scanword.backend.entity.enums.ExtensionEnum;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.repository.DictionaryRepository;
@@ -38,6 +39,14 @@ public class DictionaryRepositoryService {
         }
 
         return  dictionaryModels;
+    }
+
+    public Dictionary getDictionaryById(UUID dictUUID) {
+        return repository.findByUUID(dictUUID);
+    }
+
+    public List<Dictionary> getFileByName (String name) {
+        return repository.getDictionaryByName(name);
     }
 
     public List<DictionaryItem> getItemsById(UUID dictUUID) {
@@ -115,6 +124,12 @@ public class DictionaryRepositoryService {
         return dictionaryItems;
     }
 
+    public void delete(UUID dictUUID) {
+        Dictionary dict = new Dictionary();
+        dict.setUuid(dictUUID);
+        repository.delete(dict);
+    }
+
     public DictionaryItem editItem(UUID dictUUID, List<DictionaryItem> items) {
         deleteItem(dictUUID, items.get(0));
         setItem(dictUUID, items.get(1));
@@ -128,7 +143,7 @@ public class DictionaryRepositoryService {
         out.flush();
     }
 
-    public void saveFile (Dictionary dictionary) {
-        repository.saveAndFlush(dictionary);
+    public Dictionary saveFile (Dictionary dictionary) {
+        return repository.saveAndFlush(dictionary);
     }
 }
