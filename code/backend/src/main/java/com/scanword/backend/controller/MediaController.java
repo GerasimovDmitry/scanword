@@ -66,12 +66,20 @@ public class MediaController {
         if (!file.isEmpty() && ExtensionEnum.isValidExtension(extension)) {
             try {
                 boolean isPic = ExtensionEnum.isPic(extension);
-                String relativeWebPath = ExtensionEnum.isPic(extension)
+                String relativeSrcPath = ExtensionEnum.isPic(extension)
                         ? "src/main/resources/images"
                         : "src/main/resources/sounds";
-                String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
+                String relativeTargetPath = ExtensionEnum.isPic(extension)
+                        ? "target/classes/images"
+                        : "target/classes/sounds";
+                String absoluteFilePath = Paths.get(relativeSrcPath).toAbsolutePath().toString();
                 byte[] bytes = file.getBytes();
                 BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
+                stream.write(bytes);
+
+                absoluteFilePath = Paths.get(relativeTargetPath).toAbsolutePath().toString();
+                stream =
                         new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
                 stream.write(bytes);
                 stream.close();
