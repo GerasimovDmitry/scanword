@@ -2,6 +2,7 @@ package com.scanword.backend.service;
 
 import com.scanword.backend.entity.Dictionary;
 import com.scanword.backend.entity.Media;
+import com.scanword.backend.entity.enums.ExtensionEnum;
 import com.scanword.backend.entity.models.DictionaryItem;
 import com.scanword.backend.entity.models.DictionaryModel;
 import com.scanword.backend.repository.DictionaryRepository;
@@ -119,6 +120,17 @@ public class DictionaryRepositoryService {
         Dictionary dict = new Dictionary();
         dict.setUuid(dictUUID);
         repository.delete(dict);
+    }
+
+    public DictionaryModel addEmptyDictionary(String name){
+        Dictionary newDict = new Dictionary();
+        newDict.setName(ExtensionEnum.cutOffExtension(name));
+        newDict.setUrl(name);
+        newDict = repository.saveAndFlush(newDict);
+        DictionaryModel model = new DictionaryModel();
+        model.setId(newDict.getUuid());
+        model.setName(newDict.getName());
+        return model;
     }
 
     public DictionaryItem editItem(UUID dictUUID, List<DictionaryItem> items) {

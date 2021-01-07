@@ -63,6 +63,11 @@ public class DictionaryController {
         }
     }
 
+    @PostMapping(value="/add")
+    public DictionaryModel addDictionary(@RequestParam("name") String name) {
+        return dictionaryRepositoryService.addEmptyDictionary(name);
+    }
+
     @DeleteMapping("/delete")
     public void removeDictionary(@RequestParam("id") UUID dictUUID) {
         dictionaryRepositoryService.delete(dictUUID);
