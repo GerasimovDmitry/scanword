@@ -63,6 +63,11 @@ public class DictionaryController {
         }
     }
 
+    @DeleteMapping("/delete")
+    public void removeDictionary(@RequestParam("id") UUID dictUUID) {
+        dictionaryRepositoryService.delete(dictUUID);
+    }
+
     @PutMapping("/add/item")
     public List<DictionaryItem> addDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
         return dictionaryRepositoryService.setItem(dictUUID, item);

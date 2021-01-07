@@ -115,6 +115,12 @@ public class DictionaryRepositoryService {
         return dictionaryItems;
     }
 
+    public void delete(UUID dictUUID) {
+        Dictionary dict = new Dictionary();
+        dict.setUuid(dictUUID);
+        repository.delete(dict);
+    }
+
     public DictionaryItem editItem(UUID dictUUID, List<DictionaryItem> items) {
         deleteItem(dictUUID, items.get(0));
         setItem(dictUUID, items.get(1));
