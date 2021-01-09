@@ -44,7 +44,7 @@ public class DictionaryController {
     public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
                                                  @RequestBody MultipartFile file) {
         String extension = ExtensionEnum.getExtension(name);
-        if (!file.isEmpty() && extension == "dict") {
+        if (!file.isEmpty() && extension.toLowerCase().equals("dict")) {
             if (dictionaryRepositoryService.getFileByName(name).isEmpty()) {
                 try {
                     String relativeWebPath = "src/main/resources/dictionaries";
@@ -116,18 +116,18 @@ public class DictionaryController {
                 HttpStatus.BAD_REQUEST, "не удалось удалить " + dict.getUrl());
     }
 
-    @PutMapping("/add/item")
-    public List<DictionaryItem> addDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
+    @PutMapping(value="/add/item", produces = "text/plain;charset=UTF-8")
+    public String addDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
         return dictionaryRepositoryService.setItem(dictUUID, item);
     }
 
-    @DeleteMapping("/delete/item")
-    public List<DictionaryItem> removeDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
+    @DeleteMapping(value="/delete/item", produces = "text/plain;charset=UTF-8")
+    public String removeDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
         return dictionaryRepositoryService.deleteItem(dictUUID, item);
     }
 
-    @PutMapping("/edit/item")
-    public DictionaryItem editDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody List<DictionaryItem> items) {
+    @PutMapping(value="/edit/item", produces = "text/plain;charset=UTF-8")
+    public String editDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody List<DictionaryItem> items) {
          return dictionaryRepositoryService.editItem(dictUUID, items);
     }
 }
