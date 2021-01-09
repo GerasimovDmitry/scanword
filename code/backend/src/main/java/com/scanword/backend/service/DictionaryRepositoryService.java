@@ -81,11 +81,12 @@ public class DictionaryRepositoryService {
         return dictionaryItems;
     }
 
-    public List<DictionaryItem> setItem(UUID dictUUID, DictionaryItem item) {
+    public String setItem(UUID dictUUID, DictionaryItem item) {
         List<DictionaryItem> dictionaryItems = getItemsById(dictUUID);
         Dictionary dictionary = repository.findByUUID(dictUUID);
         if (dictionaryItems.contains(item)){
-            return dictionaryItems;
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Такое понятие уже есть в словаре");
         }
         else {
             try {
@@ -98,11 +99,11 @@ public class DictionaryRepositoryService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return getItemsById(dictUUID);
+            return "Понятие добавлено в словарь";
         }
     }
 
-    public List<DictionaryItem> deleteItem(UUID dictUUID, DictionaryItem item) {
+    public String deleteItem(UUID dictUUID, DictionaryItem item) {
         List<DictionaryItem> dictionaryItems = getItemsById(dictUUID);
         Dictionary dictionary = repository.findByUUID(dictUUID);
         if (dictionaryItems.contains(item)){
@@ -119,9 +120,10 @@ public class DictionaryRepositoryService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return getItemsById(dictUUID);
+            return "Понятие удалено из словаря";
         }
-        return dictionaryItems;
+        throw new ResponseStatusException(
+                HttpStatus.BAD_REQUEST, "Такого понятия нет в словаре");
     }
 
     public void delete(UUID dictUUID) {
@@ -130,10 +132,10 @@ public class DictionaryRepositoryService {
         repository.delete(dict);
     }
 
-    public DictionaryItem editItem(UUID dictUUID, List<DictionaryItem> items) {
+    public String editItem(UUID dictUUID, List<DictionaryItem> items) {
         deleteItem(dictUUID, items.get(0));
         setItem(dictUUID, items.get(1));
-        return items.get(1);
+        return "Понятие изменено";
     }
 
     private void writeToDictionary(DictionaryItem item, BufferedWriter out) throws IOException {
