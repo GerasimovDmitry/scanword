@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class QuestionModel {
+public class QuestionScanwordModel {
     private String text;
 
     private String answer;
@@ -15,4 +15,10 @@ public class QuestionModel {
     private String type;
 
     private UUID id;
+
+    private String orientation;
+
+    private Boolean isPassed = false;
+
+    private String location;
 }

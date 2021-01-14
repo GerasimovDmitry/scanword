@@ -17,30 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ScanwordQuestion {
     @Id
-    @Column(name = "scanword_uuid", nullable = false)
-    private UUID scanwordUUID;
-
     @Column(name = "question_uuid", nullable = false)
     private UUID questionUUID;
 
-    @Column(name = "answer_x", nullable = false)
-    private Integer answerX;
-
-    @Column(name = "answer_y", nullable = false)
-    private Integer answerY;
-
-    @Column(name = "answer_x0", nullable = false)
-    private Integer answerX0;
-
-    @Column(name = "answer_y0", nullable = false)
-    private Integer answerY0;
-
-    @Column(name = "question_x", nullable = false)
-    private Integer questionX;
-
-    @Column(name = "question_y", nullable = false)
-    private Integer questionY;
+    @Column(name = "scanword_uuid", nullable = false)
+    private UUID scanwordUUID;
 
     @Column(name = "orientation", nullable = false)
     private String orientation;
+
+    @Column(name = "location", nullable = false)
+    private String location;
 }

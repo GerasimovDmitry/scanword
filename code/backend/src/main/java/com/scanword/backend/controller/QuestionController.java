@@ -21,9 +21,17 @@ public class QuestionController {
         this.questionRepositoryService = questionRepositoryService;
     }
 
+
+    //For tab Questions
     @GetMapping("/all")
     public List<QuestionModel> getQuestions() {
         return questionRepositoryService.getAll();
+    }
+
+    //For modal in create scanword tab
+    @GetMapping("/all/modal")
+    public List<QuestionModel> getQuestionsForModal(@RequestParam UUID dictionaryId) {
+        return questionRepositoryService.getQuestionsForModal(dictionaryId);
     }
 
     @PostMapping()

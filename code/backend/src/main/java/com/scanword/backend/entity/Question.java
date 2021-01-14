@@ -16,8 +16,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Question {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "uuid")
     private UUID uuid;
 
@@ -29,4 +27,7 @@ public class Question {
 
     @Column(name = "url")
     private String url;
+
+    @Column(name = "type")
+    private String type;
 }

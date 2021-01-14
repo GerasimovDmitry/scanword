@@ -55,6 +55,7 @@ CREATE TABLE "question" (
 	"answer" VARCHAR(255) NOT NULL,
 	"text" VARCHAR(255) NOT NULL,
 	"url" VARCHAR(255),
+  "type" VARCHAR(255) NOT NULL,
 	CONSTRAINT "question_pk" PRIMARY KEY ("uuid")
 ) WITH (
   OIDS=FALSE
@@ -75,13 +76,8 @@ OIDS=FALSE
 CREATE TABLE "scanword_question" (
 	"scanword_uuid" UUID NOT NULL,
 	"question_uuid" UUID NOT NULL,
-	"answer_x0" integer NOT NULL,
-	"answer_y0" integer NOT NULL,
-	"answer_x" integer NOT NULL,
-	"answer_y" integer NOT NULL,
-	"question_x" integer NOT NULL,
-	"question_y" integer NOT NULL,
   "orientation" VARCHAR(255) NOT NULL,
+  "location" VARCHAR(255) NOT NULL,
 	CONSTRAINT "scanword_question_pk" PRIMARY KEY ("scanword_uuid","question_uuid")
 ) WITH (
   OIDS=FALSE
@@ -94,6 +90,7 @@ CREATE TABLE "user_scanword_question" (
 	"scanword_uuid" UUID NOT NULL,
 	"question_uuid" UUID NOT NULL,
 	"is_passed" BOOLEAN DEFAULT 'false',
+	"user_answer" VARCHAR(255) NOT NULL,
 	CONSTRAINT "user_scanword_question_pk" PRIMARY KEY ("user_uuid","scanword_uuid","question_uuid")
 ) WITH (
   OIDS=FALSE

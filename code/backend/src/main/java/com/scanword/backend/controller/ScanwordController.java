@@ -5,7 +5,9 @@ import com.scanword.backend.entity.models.ScanwordModel;
 import com.scanword.backend.service.DictionaryRepositoryService;
 import com.scanword.backend.service.ScanwordRepositoryService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +25,15 @@ public class ScanwordController {
 
     @PostMapping("/save/super")
     public void saveScanwordByAdmin(@RequestBody ScanwordModel scanword) {
+        try {
+            scanwordRepositoryService.checkName(scanword.getName());
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Сканворд с таким именем уже существует");
+        }
+
+        scanwordRepositoryService.saveScanwordByAdmin(scanword);
     }
 
     @PostMapping("/save")
