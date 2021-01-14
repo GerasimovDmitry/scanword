@@ -34,7 +34,7 @@ public class UserRepositoryService {
         }
         if (user.getLogin().equals("admin")) {
             user.setIsAdmin(true);
-        }
+    }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         repository.save(user);
     }

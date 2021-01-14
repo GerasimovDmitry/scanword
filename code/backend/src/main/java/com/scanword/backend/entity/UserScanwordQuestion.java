@@ -28,4 +28,7 @@ public class UserScanwordQuestion {
 
     @Column(name = "is_passed", nullable = false)
     private Boolean isPassed = false;
+
+    @Column(name = "user_answer", nullable = false)
+    private String userAnswer = "";
 }

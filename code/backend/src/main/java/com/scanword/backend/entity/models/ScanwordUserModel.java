@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Data
-public class ScanwordModel {
+public class ScanwordUserModel {
+
     private UUID id;
     private Integer width;
     private Integer height;
@@ -14,4 +15,5 @@ public class ScanwordModel {
     private UUID dictionaryId;
     private String dictionaryName;
     private List<QuestionScanwordModel> questions;
+    private int countHintsUsed;
 }

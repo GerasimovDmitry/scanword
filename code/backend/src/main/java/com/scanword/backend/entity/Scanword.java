@@ -13,8 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Scanword {
     @Id
-    @GeneratedValue(generator = "uuid")
-    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "uuid")
     private UUID uuid;
 

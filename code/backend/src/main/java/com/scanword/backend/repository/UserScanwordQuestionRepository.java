@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface UserScanwordQuestionRepository extends JpaRepository<UserScanwordQuestion, UUID> {
+    UserScanwordQuestion findByQuestionUUID(UUID questionUUID);
 }

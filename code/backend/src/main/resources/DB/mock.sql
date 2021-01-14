@@ -12,10 +12,16 @@ values ('c31c7d29-fe9c-4aeb-8ad2-9358053c59b2', 'img_1', 'img_1.jpg', true),
        ('599733e2-2e1e-4331-bfe4-02264bfaf6d5', 'sound_2', 'sound_2.mp3', false),
        ('58037bce-c1a4-42f7-8e66-014e2a4d5fc5', 'sound_3', 'sound_3.mp3', false);
 
-insert into question(answer, text, url)
-values ('answer1', 'text1','img_1.jpg'),
-       ('answer2', 'text2','img_2.jpg'),
-       ('answer3', 'text3','img_3.jpg'),
-       ('answer4', 'text4','sound_1.mp3'),
-       ('answer5', 'text5','sound_2.mp3'),
-       ('answer6', 'text6','sound_3.mp3')
+insert into question(answer, text, url, type)
+values ('answer1', 'text1','img_1.jpg', 'image'),
+       ('answer2', 'text2','img_2.jpg', 'image'),
+       ('answer3', 'text3','img_3.jpg', 'image'),
+       ('answer4', 'text4','sound_1.mp3', 'sound'),
+       ('answer5', 'text5','sound_2.mp3', 'sound'),
+       ('answer6', 'text6','sound_3.mp3', 'sound');
+
+insert into "user"(uuid, login, password, is_admin)
+values ('d08edab7-c811-412d-a1f9-a86b14980033', 'admin',
+        '$2a$10$UcERjbTrFIZPOGHau.lroOfXzs3tA1TaNQW5SiFnKtnooFDLJ/XoC', true),
+       ('7343824b-c93a-4e76-9e82-385b5f3e3020', 'user',
+        '$2a$10$/9dXuG365lV0uGJtbiWJg.crOTE894cOxDB8xEBe3cRaWuHt7Bcr6', false);

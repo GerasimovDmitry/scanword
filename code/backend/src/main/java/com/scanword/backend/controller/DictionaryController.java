@@ -99,7 +99,7 @@ public class DictionaryController {
                 HttpStatus.BAD_REQUEST, "Словарь с таким именем уже существует");
     }
 
-    @DeleteMapping(value="/delete", produces = "text/plain;charset=UTF-8")
+    @PostMapping(value="/delete", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String removeDictionary(@RequestParam("id") UUID dictUUID) {
         Dictionary dict = dictionaryRepositoryService.getDictionaryById(dictUUID);
 
@@ -121,7 +121,7 @@ public class DictionaryController {
         return dictionaryRepositoryService.setItem(dictUUID, item);
     }
 
-    @DeleteMapping(value="/delete/item", produces = "text/plain;charset=UTF-8")
+    @PostMapping(value="/delete/item", produces = "text/plain;charset=UTF-8")
     public String removeDictionaryItem(@RequestParam("id") UUID dictUUID, @RequestBody DictionaryItem item) {
         return dictionaryRepositoryService.deleteItem(dictUUID, item);
     }

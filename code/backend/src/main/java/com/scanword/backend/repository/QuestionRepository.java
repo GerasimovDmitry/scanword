@@ -12,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, UUID> {
-    @Query(value = "SELECT * FROM question WHERE uuid = :dictUUID", nativeQuery = true)
-    Question findByUUID(@Param("dictUUID")UUID dictUUID);
+    @Query(value = "SELECT * FROM question WHERE uuid = :questionUUID", nativeQuery = true)
+    Question findByUUID(@Param("questionUUID")UUID questionUUID);
 }
