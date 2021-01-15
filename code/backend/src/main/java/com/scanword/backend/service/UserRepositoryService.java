@@ -1,5 +1,6 @@
 package com.scanword.backend.service;
 
+import com.scanword.backend.config.Constants;
 import com.scanword.backend.entity.User;
 import com.scanword.backend.entity.models.UserModel;
 import com.scanword.backend.repository.UserRepository;
@@ -36,6 +37,7 @@ public class UserRepositoryService {
             user.setIsAdmin(true);
     }
         user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setUuid(Constants.userId);
         repository.save(user);
     }
 

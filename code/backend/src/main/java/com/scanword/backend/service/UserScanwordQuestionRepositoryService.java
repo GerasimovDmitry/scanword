@@ -56,4 +56,8 @@ public class UserScanwordQuestionRepositoryService {
     public int getCountOfQuestionsByScanwordUUID(UUID id)  {
         return repository.countByScanwordUUID(id);
     }
+
+    public List<UserScanwordQuestion> getEntityByIds(UUID userId, UUID scanwordId) {
+        return repository.findAllByUserUUIDAndScanwordUUID(userId, scanwordId);
+    }
 }

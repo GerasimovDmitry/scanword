@@ -66,6 +66,17 @@ public class QuestionRepositoryService {
         return model;
     }
 
+    public QuestionModel getQuestionForScanword(UUID id) {
+        Question question = questionRepository.findByUUID(id);
+        QuestionModel model = new QuestionModel();
+        model.setId(question.getUuid());
+        model.setText(question.getText());
+        model.setType(getQuestionType(question.getUrl()));
+        model.setAnswer(question.getAnswer());
+        model.setUrl(question.getUrl());
+        return model;
+    }
+
     public QuestionModel createQuestion(QuestionModel questionModel) {
         Question question = new Question();
         question.setText(questionModel.getText());
