@@ -49,7 +49,7 @@ public class QuestionController {
         return questionRepositoryService.createQuestion(question);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public void deleteQuestion(@RequestBody QuestionModel question) {
         questionRepositoryService.deleteQuestion(question);
     }

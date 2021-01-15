@@ -12,13 +12,13 @@ values ('c31c7d29-fe9c-4aeb-8ad2-9358053c59b2', 'img_1', 'img_1.jpg', true),
        ('599733e2-2e1e-4331-bfe4-02264bfaf6d5', 'sound_2', 'sound_2.mp3', false),
        ('58037bce-c1a4-42f7-8e66-014e2a4d5fc5', 'sound_3', 'sound_3.mp3', false);
 
-insert into question(answer, text, url, type)
-values ('answer1', 'text1','img_1.jpg', 'image'),
-       ('answer2', 'text2','img_2.jpg', 'image'),
-       ('answer3', 'text3','img_3.jpg', 'image'),
-       ('answer4', 'text4','sound_1.mp3', 'sound'),
-       ('answer5', 'text5','sound_2.mp3', 'sound'),
-       ('answer6', 'text6','sound_3.mp3', 'sound');
+insert into question(uuid, answer, text, url, type)
+values ('4fc35e7e-1cc0-45ad-80eb-6ebc80d3fe3e','answer1', 'text1','img_1.jpg', 'image'),
+       ('2795f1cd-284a-47aa-a200-5c2e364e4420','answer2', 'text2','img_2.jpg', 'image'),
+       ('cae06e9d-b535-4990-9511-6dd40425156d','answer3', 'text3','img_3.jpg', 'image'),
+       ('b274dcb0-46b0-43e1-95bf-2df89e350c7a','answer4', 'text4','sound_1.mp3', 'sound'),
+       ('55565834-b579-4096-80d4-775f11d5a6f8','answer5', 'text5','sound_2.mp3', 'sound'),
+       ('6b7d181a-eb66-4579-a017-4eb6e85a498f','answer6', 'text6','sound_3.mp3', 'sound');
 
 insert into "user"(uuid, login, password, is_admin)
 values ('d08edab7-c811-412d-a1f9-a86b14980033', 'admin',

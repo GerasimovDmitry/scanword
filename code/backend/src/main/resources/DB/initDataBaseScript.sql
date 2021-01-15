@@ -39,9 +39,7 @@ CREATE TABLE "dictionary" (
 CREATE TABLE "user_scanword" (
 	"user_uuid" UUID NOT NULL,
 	"scanword_uuid" UUID NOT NULL,
-	"is_passed" BOOLEAN NOT NULL DEFAULT 'false',
 	"count_hints_used" integer NOT NULL,
-	"save_name" VARCHAR(255) NOT NULL,
 	"score" integer NOT NULL,
 	CONSTRAINT "user_scanword_pk" PRIMARY KEY ("user_uuid","scanword_uuid")
 ) WITH (
@@ -99,17 +97,17 @@ CREATE TABLE "user_scanword_question" (
 
 
 
-ALTER TABLE "scanword" ADD CONSTRAINT "scanword_fk0" FOREIGN KEY ("dictionary_uuid") REFERENCES "dictionary"("uuid");
+ALTER TABLE "scanword" ADD CONSTRAINT "scanword_fk0" FOREIGN KEY ("dictionary_uuid") REFERENCES "dictionary"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 
-ALTER TABLE "user_scanword" ADD CONSTRAINT "user_scanword_fk0" FOREIGN KEY ("user_uuid") REFERENCES "user"("uuid");
-ALTER TABLE "user_scanword" ADD CONSTRAINT "user_scanword_fk1" FOREIGN KEY ("scanword_uuid") REFERENCES "scanword"("uuid");
+ALTER TABLE "user_scanword" ADD CONSTRAINT "user_scanword_fk0" FOREIGN KEY ("user_uuid") REFERENCES "user"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user_scanword" ADD CONSTRAINT "user_scanword_fk1" FOREIGN KEY ("scanword_uuid") REFERENCES "scanword"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 
-ALTER TABLE "scanword_question" ADD CONSTRAINT "scanword_question_fk0" FOREIGN KEY ("scanword_uuid") REFERENCES "scanword"("uuid");
-ALTER TABLE "scanword_question" ADD CONSTRAINT "scanword_question_fk1" FOREIGN KEY ("question_uuid") REFERENCES "question"("uuid");
+ALTER TABLE "scanword_question" ADD CONSTRAINT "scanword_question_fk0" FOREIGN KEY ("scanword_uuid") REFERENCES "scanword"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "scanword_question" ADD CONSTRAINT "scanword_question_fk1" FOREIGN KEY ("question_uuid") REFERENCES "question"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
-ALTER TABLE "user_scanword_question" ADD CONSTRAINT "user_scanword_question_fk0" FOREIGN KEY ("user_uuid") REFERENCES "user"("uuid");
-ALTER TABLE "user_scanword_question" ADD CONSTRAINT "user_scanword_question_fk1" FOREIGN KEY ("scanword_uuid") REFERENCES "scanword"("uuid");
-ALTER TABLE "user_scanword_question" ADD CONSTRAINT "user_scanword_question_fk2" FOREIGN KEY ("question_uuid") REFERENCES "question"("uuid");
+ALTER TABLE "user_scanword_question" ADD CONSTRAINT "user_scanword_question_fk0" FOREIGN KEY ("user_uuid") REFERENCES "user"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user_scanword_question" ADD CONSTRAINT "user_scanword_question_fk1" FOREIGN KEY ("scanword_uuid") REFERENCES "scanword"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "user_scanword_question" ADD CONSTRAINT "user_scanword_question_fk2" FOREIGN KEY ("question_uuid") REFERENCES "question"("uuid") ON DELETE CASCADE ON UPDATE CASCADE;
 
