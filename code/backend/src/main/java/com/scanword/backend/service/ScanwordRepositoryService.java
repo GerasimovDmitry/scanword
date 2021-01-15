@@ -1,9 +1,8 @@
 package com.scanword.backend.service;
 
 import com.scanword.backend.config.Constants;
-import com.scanword.backend.entity.Scanword;
-import com.scanword.backend.entity.models.BriefScanword;
-import com.scanword.backend.entity.models.ScanwordModel;
+import com.scanword.backend.entity.*;
+import com.scanword.backend.entity.models.*;
 import com.scanword.backend.repository.ScanwordQuestionRepository;
 import com.scanword.backend.repository.ScanwordRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -23,18 +22,21 @@ public class ScanwordRepositoryService {
     private ScanwordQuestionRepositoryService scanwordQuestionRepositoryService;
     private UserScanwordQuestionRepositoryService userScanwordQuestionRepositoryService;
     private UserScanwordRepositoryService userScanwordRepositoryService;
+    private DictionaryRepositoryService dictionaryRepositoryService;
 
     @Autowired
     public ScanwordRepositoryService(ScanwordRepository repository,
                                      @Lazy QuestionRepositoryService questionRepositoryService,
                                      @Lazy ScanwordQuestionRepositoryService scanwordQuestionRepositoryService,
                                      @Lazy UserScanwordQuestionRepositoryService userScanwordQuestionRepositoryService,
-                                     @Lazy UserScanwordRepositoryService userScanwordRepositoryService) {
+                                     @Lazy UserScanwordRepositoryService userScanwordRepositoryService,
+                                     @Lazy DictionaryRepositoryService dictionaryRepositoryService) {
         this.repository = repository;
         this.questionRepositoryService = questionRepositoryService;
         this.scanwordQuestionRepositoryService = scanwordQuestionRepositoryService;
         this.userScanwordQuestionRepositoryService = userScanwordQuestionRepositoryService;
         this.userScanwordRepositoryService = userScanwordRepositoryService;
+        this.dictionaryRepositoryService = dictionaryRepositoryService;
     }
 
     public void checkName(String name)throws Exception {
@@ -80,6 +82,41 @@ public class ScanwordRepositoryService {
             result.add(bs);
         }
         return result;
+    }
+
+    public ScanwordUserModel getScanwordForUser(UUID scanwordId) {
+        ScanwordUserModel scanwordUserModel = new ScanwordUserModel();
+        List<QuestionScanwordModel> questionScanwordModels = new ArrayList<>();
+        Scanword scanword = repository.findByUuid(scanwordId);
+
+        scanwordUserModel.setId(scanwordId);
+        scanwordUserModel.setDictionaryId(scanword.getDictionaryUUID());
+        scanwordUserModel.setHeight(scanword.getHeight());
+        scanwordUserModel.setWidth(scanword.getWidth());
+        scanwordUserModel.setName(scanword.getName());
+        scanwordUserModel.setDictionaryName(dictionaryRepositoryService.getDictionaryById(scanword.getDictionaryUUID()).getName());
+
+        UserScanword userScanword = userScanwordRepositoryService.getUserScanwordByUserIdAndScanwordId(Constants.userId, scanwordId);
+        scanwordUserModel.setCountHintsUsed(userScanword.getCountHintsUsed());
+
+        List<UserScanwordQuestion> userScanwordQuestions = userScanwordQuestionRepositoryService.getEntityByIds(Constants.userId, scanwordId);
+        for (UserScanwordQuestion q: userScanwordQuestions) {
+            QuestionScanwordModel m = new QuestionScanwordModel();
+            m.setId(q.getQuestionUUID());
+            m.setIsPassed(q.getIsPassed());
+            ScanwordQuestion sq = scanwordQuestionRepositoryService.getScanwordQuestionByQuestionId(q.getQuestionUUID());
+            m.setLocation(sq.getLocation());
+            m.setOrientation(sq.getOrientation());
+            QuestionModel question = questionRepositoryService.getQuestionForScanword(q.getQuestionUUID());
+            m.setAnswer(question.getAnswer());
+            m.setType(question.getType());
+            m.setUrl(question.getUrl());
+            m.setText(question.getText());
+            questionScanwordModels.add(m);
+        }
+        scanwordUserModel.setQuestions(questionScanwordModels);
+
+        return scanwordUserModel;
     }
 }
 

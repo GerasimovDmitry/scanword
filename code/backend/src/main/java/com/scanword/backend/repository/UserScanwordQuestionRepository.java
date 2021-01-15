@@ -4,6 +4,7 @@ import com.scanword.backend.entity.UserScanwordQuestion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Repository
@@ -11,4 +12,6 @@ public interface UserScanwordQuestionRepository extends JpaRepository<UserScanwo
     UserScanwordQuestion findByQuestionUUID(UUID questionUUID);
 
     int countByScanwordUUID(UUID scanwordUUID);
+
+    List<UserScanwordQuestion> findAllByUserUUIDAndScanwordUUID(UUID userUUID, UUID scanwordUUID);
 }

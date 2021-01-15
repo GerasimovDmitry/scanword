@@ -1,8 +1,10 @@
 package com.scanword.backend.controller;
 
 import com.scanword.backend.entity.Media;
+import com.scanword.backend.entity.Scanword;
 import com.scanword.backend.entity.models.BriefScanword;
 import com.scanword.backend.entity.models.ScanwordModel;
+import com.scanword.backend.entity.models.ScanwordUserModel;
 import com.scanword.backend.service.DictionaryRepositoryService;
 import com.scanword.backend.service.ScanwordRepositoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -46,14 +48,10 @@ public class ScanwordController {
         return null;
     }
 
-    @PostMapping("/open/super")
-    public ScanwordModel getScanwordByAdmin(@RequestParam UUID userId, UUID scanwordId) {
-        return null;
-    }
+    @GetMapping("/open")
+    public ScanwordUserModel getScanwordById(@RequestParam UUID id) {
 
-    @PostMapping("/open")
-    public ScanwordModel getScanwordByUser(@RequestParam UUID userId, UUID scanwordId) {
-        return null;
+        return scanwordRepositoryService.getScanwordForUser(id);
     }
 
     @GetMapping("/all")
