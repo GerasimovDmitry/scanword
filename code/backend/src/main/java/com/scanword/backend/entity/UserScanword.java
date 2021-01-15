@@ -19,15 +19,8 @@ public class UserScanword {
     @Column(name = "scanword_uuid", nullable = false)
     private UUID scanwordUUID;
 
-    @Column(name = "save_name", nullable = false)
-    private String saveName;
-
-
     @Column(name = "count_hints_used", nullable = false)
     private Integer countHintsUsed;
-
-    @Column(name = "is_passed", nullable = false)
-    private Boolean isPassed = false;
 
     @Column(name = "score", nullable = false)
     private Integer score;

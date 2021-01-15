@@ -1,6 +1,7 @@
 package com.scanword.backend.controller;
 
 import com.scanword.backend.entity.Media;
+import com.scanword.backend.entity.models.BriefScanword;
 import com.scanword.backend.entity.models.ScanwordModel;
 import com.scanword.backend.service.DictionaryRepositoryService;
 import com.scanword.backend.service.ScanwordRepositoryService;
@@ -53,5 +54,10 @@ public class ScanwordController {
     @PostMapping("/open")
     public ScanwordModel getScanwordByUser(@RequestParam UUID userId, UUID scanwordId) {
         return null;
+    }
+
+    @GetMapping("/all")
+    public List<BriefScanword> getListScanword() {
+        return scanwordRepositoryService.getBriefScanwords();
     }
 }

@@ -17,14 +17,15 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserScanwordQuestion {
     @Id
+    @Column(name = "question_uuid", nullable = false)
+    private UUID questionUUID;
+
     @Column(name = "user_uuid")
     private UUID userUUID;
 
     @Column(name = "scanword_uuid", nullable = false)
     private UUID scanwordUUID;
 
-    @Column(name = "question_uuid", nullable = false)
-    private UUID questionUUID;
 
     @Column(name = "is_passed", nullable = false)
     private Boolean isPassed = false;

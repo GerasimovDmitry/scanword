@@ -52,4 +52,8 @@ public class UserScanwordQuestionRepositoryService {
     public boolean isExist(UUID id) {
         return repository.findByQuestionUUID(id) == null;
     }
+
+    public int getCountOfQuestionsByScanwordUUID(UUID id)  {
+        return repository.countByScanwordUUID(id);
+    }
 }
