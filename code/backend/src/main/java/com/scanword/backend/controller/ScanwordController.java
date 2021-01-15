@@ -49,9 +49,15 @@ public class ScanwordController {
     }
 
     @GetMapping("/open")
-    public ScanwordUserModel getScanwordById(@RequestParam UUID id) {
+    public ScanwordUserModel getScanwordByIdForUser(@RequestParam UUID id) {
 
         return scanwordRepositoryService.getScanwordForUser(id);
+    }
+
+    @GetMapping("/open/super")
+    public ScanwordModel getScanwordByIdForAdmin(@RequestParam UUID id) {
+
+        return scanwordRepositoryService.getScanwordForAdmin(id);
     }
 
     @GetMapping("/all")

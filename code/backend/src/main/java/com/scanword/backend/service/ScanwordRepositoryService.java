@@ -118,5 +118,37 @@ public class ScanwordRepositoryService {
 
         return scanwordUserModel;
     }
+
+    public ScanwordModel getScanwordForAdmin(UUID scanwordId) {
+        ScanwordModel scanwordModel = new ScanwordModel();
+        List<QuestionScanwordModel> questionScanwordModels = new ArrayList<>();
+        Scanword scanword = repository.findByUuid(scanwordId);
+
+        scanwordModel.setId(scanwordId);
+        scanwordModel.setDictionaryId(scanword.getDictionaryUUID());
+        scanwordModel.setHeight(scanword.getHeight());
+        scanwordModel.setWidth(scanword.getWidth());
+        scanwordModel.setName(scanword.getName());
+        scanwordModel.setDictionaryName(dictionaryRepositoryService.getDictionaryById(scanword.getDictionaryUUID()).getName());
+
+        List<UserScanwordQuestion> userScanwordQuestions = userScanwordQuestionRepositoryService.getEntityByIds(Constants.userId, scanwordId);
+        for (UserScanwordQuestion q: userScanwordQuestions) {
+            QuestionScanwordModel m = new QuestionScanwordModel();
+            m.setId(q.getQuestionUUID());
+            m.setIsPassed(q.getIsPassed());
+            ScanwordQuestion sq = scanwordQuestionRepositoryService.getScanwordQuestionByQuestionId(q.getQuestionUUID());
+            m.setLocation(sq.getLocation());
+            m.setOrientation(sq.getOrientation());
+            QuestionModel question = questionRepositoryService.getQuestionForScanword(q.getQuestionUUID());
+            m.setAnswer(question.getAnswer());
+            m.setType(question.getType());
+            m.setUrl(question.getUrl());
+            m.setText(question.getText());
+            questionScanwordModels.add(m);
+        }
+        scanwordModel.setQuestions(questionScanwordModels);
+
+        return scanwordModel;
+    }
 }
 
