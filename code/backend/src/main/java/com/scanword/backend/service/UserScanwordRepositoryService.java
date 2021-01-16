@@ -2,6 +2,7 @@ package com.scanword.backend.service;
 
 import com.scanword.backend.entity.UserScanword;
 import com.scanword.backend.entity.models.ScanwordModel;
+import com.scanword.backend.entity.models.ScanwordUserModel;
 import com.scanword.backend.repository.UserScanwordQuestionRepository;
 import com.scanword.backend.repository.UserScanwordRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,15 @@ public class UserScanwordRepositoryService {
         userScanword.setScanwordUUID(scanword.getId());
         userScanword.setScore(0);
         userScanword.setCountHintsUsed(0);
+        repository.saveAndFlush(userScanword);
+    }
+
+    public void updateUserScanword(UUID userId, ScanwordUserModel scanword, int score) {
+        UserScanword userScanword = new UserScanword();
+        userScanword.setUserUUID(userId);
+        userScanword.setScanwordUUID(scanword.getId());
+        userScanword.setScore(score);
+        userScanword.setCountHintsUsed(scanword.getCountHintsUsed());
         repository.saveAndFlush(userScanword);
     }
 

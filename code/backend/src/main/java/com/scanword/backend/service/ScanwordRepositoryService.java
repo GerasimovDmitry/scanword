@@ -46,7 +46,9 @@ public class ScanwordRepositoryService {
     }
 
     public void saveScanwordByAdmin(ScanwordModel scanword) {
-        scanword.setId(UUID.randomUUID());
+        if (scanword.getId() == null) {
+            scanword.setId(UUID.randomUUID());
+        }
         UUID userId = Constants.userId;
         Scanword sc = new Scanword();
         sc.setHeight(scanword.getHeight());
@@ -77,7 +79,7 @@ public class ScanwordRepositoryService {
             score = score + currentScore;
             score = score + "/";
             score = score + maxScore;
-            score = score + " " + Math.round((double)currentScore/(double)maxScore) + "%";
+            score = score + " " + Math.round((double)currentScore*100/(double)maxScore) + "%";
             bs.setScore(score);
             result.add(bs);
         }
@@ -149,6 +151,43 @@ public class ScanwordRepositoryService {
         scanwordModel.setQuestions(questionScanwordModels);
 
         return scanwordModel;
+    }
+
+    public void removeScanword(UUID scanwordId) {
+        List<UserScanwordQuestion> userScanwordQuestions = userScanwordQuestionRepositoryService.getEntityByIds(Constants.userId, scanwordId);
+        for (UserScanwordQuestion q : userScanwordQuestions) {
+            Question question = questionRepositoryService.getQuestionById(q.getQuestionUUID());
+            questionRepositoryService.deleteQuestionById(q.getQuestionUUID());
+            if (!question.getType().equals("text")) {
+                questionRepositoryService.saveQuestion(question);
+            }
+        }
+        repository.deleteById(scanwordId);
+    }
+
+    public void saveScanwordByUser(ScanwordUserModel scanword) {
+        if (scanword.getId() == null) {
+            scanword.setId(UUID.randomUUID());
+        }
+        UUID userId = Constants.userId;
+        Scanword sc = new Scanword();
+        sc.setHeight(scanword.getHeight());
+        sc.setWidth(scanword.getWidth());
+        sc.setDictionaryUUID(scanword.getDictionaryId());
+        sc.setUuid(scanword.getId());
+        sc.setName(scanword.getName());
+        repository.saveAndFlush(sc);
+        int score = 0;
+        for (QuestionScanwordModel q : scanword.getQuestions()) {
+            if (q.getIsPassed()) {
+                score += 1;
+            }
+        }
+
+        questionRepositoryService.saveQuestions(scanword.getQuestions());
+        userScanwordQuestionRepositoryService.saveQuestions(scanword.getId(), userId, scanword.getQuestions());
+        scanwordQuestionRepositoryService.updateQuestions(scanword);
+        userScanwordRepositoryService.updateUserScanword(userId, scanword, score);
     }
 }
 

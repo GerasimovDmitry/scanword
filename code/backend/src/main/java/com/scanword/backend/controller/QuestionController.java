@@ -36,7 +36,7 @@ public class QuestionController {
 
     @PostMapping()
     public QuestionModel getQuestion(@RequestParam UUID questionId) {
-        return questionRepositoryService.getQuestion(questionId);
+        return questionRepositoryService.getQuestionModelById(questionId);
     }
 
     @PutMapping("/edit")

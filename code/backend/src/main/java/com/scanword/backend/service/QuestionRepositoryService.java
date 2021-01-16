@@ -57,13 +57,17 @@ public class QuestionRepositoryService {
         return url == null ? "text" : (ExtensionEnum.isPic(extension) ? "image" : "sound");
     }
 
-    public QuestionModel getQuestion(UUID id) {
+    public QuestionModel getQuestionModelById(UUID id) {
         Question question = questionRepository.findByUUID(id);
         QuestionModel model = new QuestionModel();
         model.setId(question.getUuid());
         model.setText(question.getText());
         model.setType(getQuestionType(question.getUrl()));
         return model;
+    }
+
+    public Question getQuestionById(UUID id) {
+        return questionRepository.findByUUID(id);
     }
 
     public QuestionModel getQuestionForScanword(UUID id) {
@@ -168,5 +172,9 @@ public class QuestionRepositoryService {
 
     public void saveQuestion(Question cloneQuestion) {
         questionRepository.saveAndFlush(cloneQuestion);
+    }
+
+    public void deleteQuestionById(UUID questionId) {
+        this.questionRepository.deleteById(questionId);
     }
 }

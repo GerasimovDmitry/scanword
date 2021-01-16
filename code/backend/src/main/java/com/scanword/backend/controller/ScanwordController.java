@@ -39,10 +39,6 @@ public class ScanwordController {
         scanwordRepositoryService.saveScanwordByAdmin(scanword);
     }
 
-    @PostMapping("/save")
-    public void saveScanwordByUser(@RequestBody ScanwordModel scanword) {
-    }
-
     @PostMapping("/check")
     public ScanwordModel checkScanword(@RequestBody ScanwordModel scanword) {
         return null;
@@ -63,5 +59,31 @@ public class ScanwordController {
     @GetMapping("/all")
     public List<BriefScanword> getListScanword() {
         return scanwordRepositoryService.getBriefScanwords();
+    }
+
+    @PostMapping("/delete")
+    public void removeScanword(@RequestParam UUID id) {
+        scanwordRepositoryService.removeScanword(id);
+    }
+
+    @PostMapping("/edit")
+    public void editScanword(@RequestBody ScanwordModel scanword) {
+        scanwordRepositoryService.removeScanword(scanword.getId());
+        try {
+            scanwordRepositoryService.checkName(scanword.getName());
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Сканворд с таким именем уже существует");
+        }
+
+        scanwordRepositoryService.saveScanwordByAdmin(scanword);
+    }
+
+    @PostMapping("/save")
+    public void saveScanwordByUser(@RequestBody ScanwordUserModel scanword) {
+        scanwordRepositoryService.removeScanword(scanword.getId());
+
+        scanwordRepositoryService.saveScanwordByUser(scanword);
     }
 }
