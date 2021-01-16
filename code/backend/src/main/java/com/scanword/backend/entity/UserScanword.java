@@ -12,10 +12,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserScanword {
-    @Id
     @Column(name = "user_uuid")
     private UUID userUUID;
 
+    @Id
     @Column(name = "scanword_uuid", nullable = false)
     private UUID scanwordUUID;
 
