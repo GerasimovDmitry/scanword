@@ -81,6 +81,7 @@ public class ScanwordRepositoryService {
             score = score + maxScore;
             score = score + " " + Math.round((double)currentScore*100/(double)maxScore) + "%";
             bs.setScore(score);
+            bs.setPassed(currentScore == maxScore);
             result.add(bs);
         }
         return result;
