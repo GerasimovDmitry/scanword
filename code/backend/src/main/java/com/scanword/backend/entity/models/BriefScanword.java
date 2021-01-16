@@ -9,4 +9,5 @@ public class BriefScanword {
     private String name;
     private UUID id;
     private String score;
+    private boolean isPassed;
 }
