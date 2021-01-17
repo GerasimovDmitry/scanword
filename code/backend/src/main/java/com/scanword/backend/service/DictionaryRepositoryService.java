@@ -148,10 +148,4 @@ public class DictionaryRepositoryService {
     public Dictionary saveFile (Dictionary dictionary) {
         return repository.saveAndFlush(dictionary);
     }
-
-    public void checkName(String name) throws Exception {
-        if (repository.getDictionaryByName(name) != null) {
-            throw new Exception();
-        }
-    }
 }
