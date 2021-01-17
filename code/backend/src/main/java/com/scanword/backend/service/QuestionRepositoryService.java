@@ -177,4 +177,8 @@ public class QuestionRepositoryService {
     public void deleteQuestionById(UUID questionId) {
         this.questionRepository.deleteById(questionId);
     }
+
+    public void deleteQuestionByUrl(String name) {
+        questionRepository.deleteByUrl(name);
+    }
 }

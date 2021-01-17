@@ -14,4 +14,6 @@ import java.util.UUID;
 public interface QuestionRepository extends JpaRepository<Question, UUID> {
     @Query(value = "SELECT * FROM question WHERE uuid = :questionUUID", nativeQuery = true)
     Question findByUUID(@Param("questionUUID")UUID questionUUID);
+
+    void deleteByUrl(String url);
 }

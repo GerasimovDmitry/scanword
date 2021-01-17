@@ -27,4 +27,6 @@ public interface MediaRepository extends JpaRepository<Media, UUID> {
     @Modifying
     @Transactional
     void deleteMediaByUrl(@Param("url")String url);
+
+    Media findByUrl(String url);
 }
