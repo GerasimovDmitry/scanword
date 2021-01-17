@@ -4,6 +4,7 @@ import com.scanword.backend.entity.Media;
 import com.scanword.backend.repository.MediaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,10 +13,12 @@ import java.util.List;
 @Service
 public class MediaRepositoryService {
     private MediaRepository repository;
+    private QuestionRepositoryService questionRepositoryService;
 
     @Autowired
-    public MediaRepositoryService(MediaRepository repository) {
+    public MediaRepositoryService(MediaRepository repository, @Lazy QuestionRepositoryService questionRepositoryService) {
         this.repository = repository;
+        this.questionRepositoryService = questionRepositoryService;
     }
 
     public List<Media> getAllImages () {
@@ -31,6 +34,7 @@ public class MediaRepositoryService {
     }
 
     public void deleteFileByName (String name) {
+        questionRepositoryService.deleteQuestionByUrl(name);
         repository.deleteMediaByUrl(name);
     }
     public List<Media> getFileByName (String name) {

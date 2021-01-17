@@ -43,6 +43,13 @@ public class DictionaryController {
     @PostMapping(value="/upload", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
                                                  @RequestBody MultipartFile file) {
+        try {
+            dictionaryRepositoryService.checkName(name);
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Словарь с таким именем уже существует");
+        }
         String extension = ExtensionEnum.getExtension(name);
         if (!file.isEmpty() && extension.toLowerCase().equals("dict")) {
             if (dictionaryRepositoryService.getFileByName(name).isEmpty()) {
@@ -71,6 +78,13 @@ public class DictionaryController {
 
     @PostMapping(value="/add", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String addNewEmptyDictionary(@RequestParam("name") String name) {
+        try {
+            dictionaryRepositoryService.checkName(name);
+
+        } catch (Exception ex) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT, "Словарь с таким именем уже существует");
+        }
         String relativeWebPath = "src/main/resources/dictionaries";
         String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
         File dictonaryFile = new File(absoluteFilePath,name + ".dict");
