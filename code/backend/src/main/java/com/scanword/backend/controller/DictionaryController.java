@@ -41,16 +41,10 @@ public class DictionaryController {
     }
 
     @PostMapping(value="/upload", produces = "text/plain;charset=UTF-8")
-    public @ResponseBody String handleFileUpload(@RequestParam("name") String name,
+    public @ResponseBody String handleFileUpload(@RequestParam("name") String url,
                                                  @RequestBody MultipartFile file) {
-        try {
-            dictionaryRepositoryService.checkName(name);
-
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Словарь с таким именем уже существует");
-        }
-        String extension = ExtensionEnum.getExtension(name);
+        String extension = ExtensionEnum.getExtension(url);
+        String name = ExtensionEnum.cutOffExtension(url);
         if (!file.isEmpty() && extension.toLowerCase().equals("dict")) {
             if (dictionaryRepositoryService.getFileByName(name).isEmpty()) {
                 try {
@@ -58,33 +52,26 @@ public class DictionaryController {
                     String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
                     byte[] bytes = file.getBytes();
                     BufferedOutputStream stream =
-                            new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,name)));
+                            new BufferedOutputStream(new FileOutputStream(new File(absoluteFilePath,url)));
                     stream.write(bytes);
                     stream.close();
                     Dictionary savedDictionary = new Dictionary();
-                    savedDictionary.setName(ExtensionEnum.cutOffExtension(name));
-                    savedDictionary.setUrl(name);
+                    savedDictionary.setName(name);
+                    savedDictionary.setUrl(url);
                     dictionaryRepositoryService.saveFile(savedDictionary);
-                    return "Вы удачно загрузили " + name + " в " + name + " !";
+                    return "Вы удачно загрузили " + url + " в " + url + " !";
                 } catch (Exception e) {
                     throw new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name, e);
+                            HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + url, e);
                 }
             } else throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST, "Словарь с таким именем уже существует");
+                    HttpStatus.CONFLICT, "Словарь с таким именем уже существует");
         } else throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + name + ", потому что файл пустой или имеет некорректное расширение.");
+                HttpStatus.BAD_REQUEST, "Вам не удалось загрузить " + url + ", потому что файл пустой или имеет некорректное расширение.");
     }
 
     @PostMapping(value="/add", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String addNewEmptyDictionary(@RequestParam("name") String name) {
-        try {
-            dictionaryRepositoryService.checkName(name);
-
-        } catch (Exception ex) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT, "Словарь с таким именем уже существует");
-        }
         String relativeWebPath = "src/main/resources/dictionaries";
         String absoluteFilePath = Paths.get(relativeWebPath).toAbsolutePath().toString();
         File dictonaryFile = new File(absoluteFilePath,name + ".dict");
